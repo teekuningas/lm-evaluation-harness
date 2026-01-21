@@ -1,0 +1,4 @@
+task: finbench_general_knowledge_gen_mcf_fbv2_p1
+include: _finbench_general_knowledge_gen_mcf_fbv2_yaml
+doc_to_text: !function utils.doc_to_text_with_choices_injected
+dataset_name: general_knowledge_zero_shot

@@ -1,0 +1,4 @@
+task: finbench_emotions_1k_gen_mcf_fbv2_p4
+include: _finbench_emotions_1k_gen_mcf_fbv2_yaml
+doc_to_text: !function utils.doc_to_text_with_choices_injected
+dataset_name: emotions_1k_zero_shot

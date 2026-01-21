@@ -139,7 +139,15 @@ def get_choices_from_doc(doc, debug=False):
             eval_logger.debug(f"[Schema Detection] belebele format: mc_answer1-4: {choices}")
         return choices
     
-    # Strategy 4: truthfulqa mc1/mc2 format
+    # Strategy 4: v1_multiprompt format (multiple_choice_targets)
+    if "multiple_choice_targets" in doc:
+        choices = doc["multiple_choice_targets"]
+        if isinstance(choices, list):
+            if debug:
+                eval_logger.debug(f"[Schema Detection] v1_multiprompt format: multiple_choice_targets: {choices}")
+            return choices
+    
+    # Strategy 5: truthfulqa mc1/mc2 format
     if "mc1_targets" in doc and isinstance(doc["mc1_targets"], dict):
         if "choices" in doc["mc1_targets"]:
             choices = doc["mc1_targets"]["choices"]
@@ -154,7 +162,7 @@ def get_choices_from_doc(doc, debug=False):
                 eval_logger.debug(f"[Schema Detection] truthfulqa mc2: {choices}")
             return choices
     
-    # Strategy 5: Fallback - check for common field names
+    # Strategy 6: Fallback - check for common field names
     for field_name in ["options", "answers", "alternatives"]:
         if field_name in doc and isinstance(doc[field_name], list):
             if debug:
@@ -187,7 +195,14 @@ def get_target_from_doc(doc, choices=None, debug=False):
     Returns:
         Target answer string (the actual choice word), or None if not found
     """
-    # Strategy 1: Direct target word (scandisent, finbench_v1_multiprompt)
+    # Strategy 1: v1_multiprompt format (targets[0])
+    if "targets" in doc and isinstance(doc["targets"], list) and len(doc["targets"]) > 0:
+        target = doc["targets"][0]
+        if debug:
+            eval_logger.debug(f"[Target Detection] v1_multiprompt: targets[0] = '{target}'")
+        return target
+    
+    # Strategy 2: Direct target word (scandisent)
     if "gold" in doc and isinstance(doc["gold"], str):
         # Could be a word or an index as string
         if doc["gold"].isdigit():
@@ -203,7 +218,7 @@ def get_target_from_doc(doc, choices=None, debug=False):
                 eval_logger.debug(f"[Target Detection] doc['gold'] word: '{doc['gold']}'")
             return doc["gold"]
     
-    # Strategy 2: Integer index (goldenswag, sib200)
+    # Strategy 3: Integer index (goldenswag, sib200)
     if "gold" in doc and isinstance(doc["gold"], int):
         idx = doc["gold"]
         if choices and 0 <= idx < len(choices):

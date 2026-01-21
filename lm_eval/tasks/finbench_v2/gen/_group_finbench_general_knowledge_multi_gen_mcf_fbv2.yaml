@@ -1,0 +1,11 @@
+group: group_finbench_general_knowledge_multi_gen_mcf_fbv2
+task:
+- finbench_general_knowledge_gen_mcf_fbv2_p0
+- finbench_general_knowledge_gen_mcf_fbv2_p1
+- finbench_general_knowledge_gen_mcf_fbv2_p2
+- finbench_general_knowledge_gen_mcf_fbv2_p3
+- finbench_general_knowledge_gen_mcf_fbv2_p4
+aggregate_metric_list:
+- metric: exact_match
+  aggregation: mean
+  weight_by_size: true

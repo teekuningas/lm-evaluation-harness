@@ -74,6 +74,12 @@ DATASET_SCHEMAS = {
         'doc_to_choice': '{{ choices }}',
         'choices_template': "{% for s in choices %}{{ loop.index0 }}. {{ s }}\n{% endfor %}",
     },
+    'TurkuNLP/finbenchv2-fbv1-stripped-fi-ht': {
+        # Schema: multiple_choice_targets=[...] (list of choices), targets=[correct_answer] (list with one element)
+        'doc_to_target': '{{ targets[0] }}',
+        'doc_to_choice': '{{ multiple_choice_targets }}',
+        'choices_template': "{% for s in multiple_choice_targets %}{{ loop.index0 }}. {{ s }}\n{% endfor %}",
+    },
 }
 
 # Task categories
@@ -102,6 +108,31 @@ TASK_CATEGORIES = {
         'path': 'lm_eval/tasks/finbench_v2/sib200',
         'task_prefix': 'sib200_fi',
         'dataset_path': 'TurkuNLP/finbenchv2-sib-200-fi-og',
+    },
+    'finbench_analogies': {
+        'path': 'lm_eval/tasks/finbench_v2/finbench_v1_multiprompt',
+        'task_prefix': 'finbench_analogies',
+        'dataset_path': 'TurkuNLP/finbenchv2-fbv1-stripped-fi-ht',
+    },
+    'finbench_emotions_1k': {
+        'path': 'lm_eval/tasks/finbench_v2/finbench_v1_multiprompt',
+        'task_prefix': 'finbench_emotions_1k',
+        'dataset_path': 'TurkuNLP/finbenchv2-fbv1-stripped-fi-ht',
+    },
+    'finbench_general_knowledge': {
+        'path': 'lm_eval/tasks/finbench_v2/finbench_v1_multiprompt',
+        'task_prefix': 'finbench_general_knowledge',
+        'dataset_path': 'TurkuNLP/finbenchv2-fbv1-stripped-fi-ht',
+    },
+    'finbench_hhh_alignment': {
+        'path': 'lm_eval/tasks/finbench_v2/finbench_v1_multiprompt',
+        'task_prefix': 'finbench_hhh_alignment',
+        'dataset_path': 'TurkuNLP/finbenchv2-fbv1-stripped-fi-ht',
+    },
+    'finbench_similarities_abstraction': {
+        'path': 'lm_eval/tasks/finbench_v2/finbench_v1_multiprompt',
+        'task_prefix': 'finbench_similarities_abstraction',
+        'dataset_path': 'TurkuNLP/finbenchv2-fbv1-stripped-fi-ht',
     },
 }
 
@@ -233,7 +264,8 @@ def create_base_yaml_content(dataset_path: str, original_base: Dict) -> Dict:
 
 
 def create_prompt_yaml_content(task_name: str, base_yaml_name: str, doc_to_text: str, 
-                               format_type: str, choices_template: str) -> Dict:
+                               format_type: str, choices_template: str, 
+                               original_prompt: Dict = None) -> Dict:
     """
     Create prompt variant YAML that includes the base template.
     
@@ -243,6 +275,14 @@ def create_prompt_yaml_content(task_name: str, base_yaml_name: str, doc_to_text:
     - Choices are always visible
     - Schema detection is handled at runtime
     - Consistent behavior across all task types
+    
+    Args:
+        task_name: New task name
+        base_yaml_name: Base YAML to include
+        doc_to_text: Original doc_to_text (not used, kept for signature)
+        format_type: cf or mcf
+        choices_template: Template for choices (not used, kept for signature)
+        original_prompt: Original prompt dict (to extract dataset_name for v1 tasks)
     """
     config = {
         'task': task_name,
@@ -250,6 +290,10 @@ def create_prompt_yaml_content(task_name: str, base_yaml_name: str, doc_to_text:
         # Use function reference instead of template - schema-aware at runtime
         'doc_to_text': '!function utils.doc_to_text_with_choices_injected'
     }
+    
+    # For v1_multiprompt tasks, include dataset_name from original
+    if original_prompt and 'dataset_name' in original_prompt:
+        config['dataset_name'] = original_prompt['dataset_name']
     
     return config
 
@@ -342,7 +386,11 @@ def migrate_category(category: str, dry_run: bool = False) -> int:
             continue
         
         # Find original base YAML
+        # v1_multiprompt uses shared template, others use task-specific base files
         base_yaml_files = list(format_path.glob(f'_{cat_info["task_prefix"]}*{format_type}*yaml'))
+        if not base_yaml_files:
+            # Try shared template (for v1_multiprompt)
+            base_yaml_files = list(format_path.glob('_*template*yaml'))
         if not base_yaml_files:
             logger.warning(f"No base YAML found in {format_path}")
             continue
@@ -380,7 +428,7 @@ def migrate_category(category: str, dry_run: bool = False) -> int:
                 logger.warning(f"Could not extract prompt variant from {prompt_file}")
                 continue
             
-            # Load original prompt file to get doc_to_text
+            # Load original prompt file to get doc_to_text and dataset_name
             original_prompt = load_yaml(prompt_file)
             doc_to_text = original_prompt.get('doc_to_text', '')
             
@@ -393,7 +441,8 @@ def migrate_category(category: str, dry_run: bool = False) -> int:
                 new_base_yaml_name,
                 doc_to_text,
                 format_type,
-                choices_template
+                choices_template,
+                original_prompt  # Pass original to extract dataset_name for v1 tasks
             )
             
             new_prompt_path = gen_path / f'{new_task_name}.yaml'
