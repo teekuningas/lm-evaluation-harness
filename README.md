@@ -5,11 +5,7 @@ Fork of [LumiOpen/lm-evaluation-harness](https://github.com/LumiOpen/lm-evaluati
 ## Quick Start
 
 ```bash
-# Quick test: FIN-bench v1, 3 tasks, 5 samples each (15 total)
-./run_benchmark.sh gpt-oss-120b
-
-# Full FIN-bench v1: All 12 tasks with at max 15 subtasks for each
-LIMIT=15 BENCHMARK=v1 SUBSET=full ./run_benchmark.sh gpt-oss-120b
+BENCHMARK=v2 LIMIT=15 ./run_benchmark.sh gpt-oss-120b
 
 # Compare results across models
 ./aggregate_results.sh
