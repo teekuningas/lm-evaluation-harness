@@ -216,7 +216,24 @@ class LocalChatCompletion(LocalCompletionsAPI):
             try:
                 tmp = [None] * len(out["choices"])
                 for choices in out["choices"]:
-                    tmp[choices["index"]] = choices["message"]["content"]
+                    content = choices["message"].get("content")
+                    
+                    # For thinking models: content should have the final answer
+                    # If content is null, that means max_gen_toks was too small
+                    if content is None:
+                        reasoning = choices["message"].get("reasoning_content", "")
+                        finish_reason = choices.get("finish_reason", "unknown")
+                        eval_logger.error(
+                            f"API returned null content! This means the model hit token limit "
+                            f"while reasoning and never generated the actual answer. "
+                            f"finish_reason={finish_reason}. "
+                            f"Increase max_gen_toks (currently set in model_args). "
+                            f"Reasoning output was: {reasoning[:100]}..."
+                        )
+                        # Return empty string to mark as failed, not use reasoning as answer
+                        content = ""
+                    
+                    tmp[choices["index"]] = content
             except Exception as e:
                 # account for cases that generation is blocked by content filter,
                 # which is common for Azure OpenAI Service,

@@ -5,10 +5,15 @@ dataset_kwargs:
   # num_shots: 0 # TODO: num of shots for `bigbench` HF dataset should be controlled through this, not through the typical methods
   # subtask_name: null
 test_split: default
-doc_to_text: inputs
+doc_to_text: !function utils.doc_to_text_with_instructions
 doc_to_target: "{{targets[0]}}"
 generation_kwargs:
-  max_gen_toks: 128
+  max_gen_toks: 2048  # Increased for thinking models (gpt-oss, deepseek-r1, etc.)
+  until: []  # Explicitly empty - let model stop naturally, don't use fewshot_delimiter default
+filter_list:
+  - name: "finbench_answer_extraction"
+    filter:
+      - function: !function utils.FINBenchAnswerFilter
 metric_list:
   - metric: exact_match
     aggregation: mean
