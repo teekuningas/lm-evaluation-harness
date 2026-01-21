@@ -1,0 +1,3 @@
+task: arc_challenge_fi_gen_mcf_fbv2_p2
+include: _arc_challenge_fi_gen_mcf_fbv2_yaml
+doc_to_text: !function utils.doc_to_text_with_choices_injected

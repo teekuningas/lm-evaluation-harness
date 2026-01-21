@@ -24,69 +24,71 @@ eval_logger = logging.getLogger("lm-eval")
 
 def doc_to_text_with_choices_injected(doc):
     """
-    Runtime doc_to_text function for generate_until tasks that ensures choices are visible.
+    Runtime doc_to_text function for generate_until tasks.
     
-    **Why this exists**: 
-    - CF (Cloze Formulation) format was designed for logprob-based multiple_choice evaluation
-      where the model doesn't see the choices in the prompt.
-    - For generate_until tasks with thinking models, we MUST show choices so the model can
-      pick from them and we can extract the answer reliably using FINBenchV2AnswerFilter.
-    - MCF (Multiple-Choice Formulation) already shows choices, so we don't modify those.
-    
-    **How it works**:
-    - For CF tasks: Detects if choices are already in prompt, if not, appends them
-    - For MCF tasks: Choices already present, returns prompt as-is
-    - Adds instructions for clean, machine-readable responses
-    
-    This mirrors the approach from FINBench v1 (finbench/utils.py::doc_to_text_with_instructions)
+    Ensures choices are visible and adds instructions for clean, machine-readable responses.
+    This mirrors FINBench v1's approach (finbench/utils.py::doc_to_text_with_instructions)
     but adapted for v2's multiple dataset schemas.
     
+    **Key features**:
+    - Adds instructions discouraging verbose explanations
+    - Shows choices with labels (0., 1., 2., etc.) 
+    - Instructs model to answer with the choice TEXT (not the index)
+    - Schema-aware: handles arc_c, belebele, goldenswag, scandisent, sib200
+    
     Args:
-        doc: Document dict with task-specific schema and 'doc_to_text' field
+        doc: Document dict with task-specific schema
         
     Returns:
-        Enhanced prompt string with choices visible
+        Complete prompt string with instructions and choices
     """
-    # Get the original prompt that was stored in the doc by the framework
-    # The framework evaluates the doc_to_text template and stores it in doc['doc_to_text']
-    # Wait, that's not how it works. Let me check the actual doc structure...
-    
-    # Actually, the framework passes doc fields directly. We need to access the
-    # original doc_to_text template. But that's not available at runtime!
-    
-    # Solution: The YAML should have doc_to_text as a regular Jinja2 template,
-    # and we'll detect at runtime if choices need to be added.
-    
-    # For now, let's build the prompt from common doc fields
-    # This is hacky but works for most v2 schemas
-    
     prompt_parts = []
     
-    # Add instructions
+    # Add critical instructions (similar to FINBench v1)
     instructions = (
         "TÄRKEÄÄ: Vastaa lyhyesti ja selkeästi. "
-        "Valitse täsmälleen yksi vastausvaihtoehto annetuista (A, B, C, jne.). "
+        "Valitse täsmälleen yksi vastausvaihtoehto annetuista. "
+        "Vastaa VAIN valintavaihtoehdolla, ÄLÄ numerolla. "
         "Älä anna pitkiä selityksiä. "
         "Vastauksesi luetaan automaattisesti.\n\n"
     )
     prompt_parts.append(instructions)
     
-    # Add main question/context (task-specific)
-    if 'question' in doc:
-        prompt_parts.append(f"Kysymys: {doc['question']}\n")
-    elif 'inputs' in doc:
-        prompt_parts.append(f"{doc['inputs']}\n")
+    # Add main question/context (schema-aware with priority order)
+    # Check in specific order to avoid conflicts
+    if 'flores_passage' in doc and 'question' in doc:
+        # Belebele format: has both passage and question
+        prompt_parts.append(f"{doc['flores_passage']}\n\nKysymys: {doc['question']}\n")
     elif 'query' in doc:
+        # Goldenswag/Scandisent format (after process_docs)
         prompt_parts.append(f"{doc['query']}\n")
+    elif 'question' in doc:
+        # ARC format: just question
+        prompt_parts.append(f"{doc['question']}\n")
+    elif 'text' in doc:
+        # SIB200 format
+        prompt_parts.append(f"{doc['text']}\n")
+    elif 'inputs' in doc:
+        # Generic format or other tasks
+        prompt_parts.append(f"{doc['inputs']}\n")
+    else:
+        # Fallback: try to find any text field
+        for key in ['context', 'sentence', 'passage']:
+            if key in doc:
+                prompt_parts.append(f"{doc[key]}\n")
+                break
     
-    # Extract and add choices
+    # Extract and add choices with numbering
     choices = get_choices_from_doc(doc, debug=False)
     
     if choices:
-        choices_text = "\n".join(f"{chr(ord('A') + i)}) {choice}" for i, choice in enumerate(choices))
-        prompt_parts.append(f"\nVaihtoehdot:\n{choices_text}\n")
-    
-    prompt_parts.append("\nVastaus:")
+        prompt_parts.append("\nVaihtoehdot:\n")
+        for i, choice in enumerate(choices):
+            prompt_parts.append(f"{i}. {choice}\n")
+        prompt_parts.append("\nVastaa valintavaihtoehdolla (EI numerolla):")
+    else:
+        # No choices found - just ask for answer
+        prompt_parts.append("\nVastaus:")
     
     return "".join(prompt_parts)
 

@@ -1,0 +1,11 @@
+group: group_goldenswag_fi_multi_gen_cf_fbv2
+task:
+- goldenswag_fi_gen_cf_fbv2_p0
+- goldenswag_fi_gen_cf_fbv2_p1
+- goldenswag_fi_gen_cf_fbv2_p2
+- goldenswag_fi_gen_cf_fbv2_p3
+- goldenswag_fi_gen_cf_fbv2_p4
+aggregate_metric_list:
+- metric: exact_match
+  aggregation: mean
+  weight_by_size: true

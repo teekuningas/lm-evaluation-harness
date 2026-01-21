@@ -1,0 +1,11 @@
+group: group_scandisent_fi_multi_gen_mcf_fbv2
+task:
+- scandisent_fi_gen_mcf_fbv2_p0
+- scandisent_fi_gen_mcf_fbv2_p1
+- scandisent_fi_gen_mcf_fbv2_p2
+- scandisent_fi_gen_mcf_fbv2_p3
+- scandisent_fi_gen_mcf_fbv2_p4
+aggregate_metric_list:
+- metric: exact_match
+  aggregation: mean
+  weight_by_size: true

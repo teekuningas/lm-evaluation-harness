@@ -1,0 +1,3 @@
+task: scandisent_fi_gen_mcf_fbv2_p2
+include: _scandisent_fi_gen_mcf_fbv2_yaml
+doc_to_text: !function utils.doc_to_text_with_choices_injected

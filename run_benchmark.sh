@@ -46,14 +46,29 @@ fi
 V1_QUICK_TASKS="FIN-bench_analogies_generate_until,FIN-bench_general_knowledge_generate_until,FIN-bench_emotions_generate_until"
 V1_FULL_TASKS="FIN-bench_analogies_generate_until,FIN-bench_arithmetic_generate_until,FIN-bench_cause_and_effect_generate_until,FIN-bench_emotions_generate_until,FIN-bench_empirical_judgments_generate_until,FIN-bench_general_knowledge_generate_until,FIN-bench_hhh_alignment_generate_until,FIN-bench_intent_recognition_generate_until,FIN-bench_misconceptions_generate_until,FIN-bench_paraphrase_generate_until,FIN-bench_sentence_ambiguity_generate_until,FIN-bench_similarities_abstraction_generate_until"
 
-# FIN-bench v2: 2 generate_until tasks (squad + truthfulqa, each with 5 prompt variants)
-V2_TASKS="squad_fi_gen_fbv2_p0,squad_fi_gen_fbv2_p1,squad_fi_gen_fbv2_p2,squad_fi_gen_fbv2_p3,squad_fi_gen_fbv2_p4,ogx_truthfulqax_gen_fi_fbv2_p0,ogx_truthfulqax_gen_fi_fbv2_p1,ogx_truthfulqax_gen_fi_fbv2_p2,ogx_truthfulqax_gen_fi_fbv2_p3,ogx_truthfulqax_gen_fi_fbv2_p4"
+# FIN-bench v2: generate_until tasks (all in finbench_v2/gen/)
+# Each category has CF and MCF variants with 5 prompts each (p0-p4)
+V2_GEN_TASKS_ARC="arc_challenge_fi_gen_cf_fbv2_p0,arc_challenge_fi_gen_cf_fbv2_p1,arc_challenge_fi_gen_cf_fbv2_p2,arc_challenge_fi_gen_cf_fbv2_p3,arc_challenge_fi_gen_cf_fbv2_p4,arc_challenge_fi_gen_mcf_fbv2_p0,arc_challenge_fi_gen_mcf_fbv2_p1,arc_challenge_fi_gen_mcf_fbv2_p2,arc_challenge_fi_gen_mcf_fbv2_p3,arc_challenge_fi_gen_mcf_fbv2_p4"
+V2_GEN_TASKS_BELEBELE="belebele_fin_gen_cf_fbv2_p0,belebele_fin_gen_cf_fbv2_p1,belebele_fin_gen_cf_fbv2_p2,belebele_fin_gen_cf_fbv2_p3,belebele_fin_gen_cf_fbv2_p4,belebele_fin_gen_mcf_fbv2_p0,belebele_fin_gen_mcf_fbv2_p1,belebele_fin_gen_mcf_fbv2_p2,belebele_fin_gen_mcf_fbv2_p3,belebele_fin_gen_mcf_fbv2_p4"
+V2_GEN_TASKS_GOLDENSWAG="goldenswag_fi_gen_cf_fbv2_p0,goldenswag_fi_gen_cf_fbv2_p1,goldenswag_fi_gen_cf_fbv2_p2,goldenswag_fi_gen_cf_fbv2_p3,goldenswag_fi_gen_cf_fbv2_p4,goldenswag_fi_gen_mcf_fbv2_p0,goldenswag_fi_gen_mcf_fbv2_p1,goldenswag_fi_gen_mcf_fbv2_p2,goldenswag_fi_gen_mcf_fbv2_p3,goldenswag_fi_gen_mcf_fbv2_p4"
+V2_GEN_TASKS_SCANDISENT="scandisent_fi_gen_cf_fbv2_p0,scandisent_fi_gen_cf_fbv2_p1,scandisent_fi_gen_cf_fbv2_p2,scandisent_fi_gen_cf_fbv2_p3,scandisent_fi_gen_cf_fbv2_p4,scandisent_fi_gen_mcf_fbv2_p0,scandisent_fi_gen_mcf_fbv2_p1,scandisent_fi_gen_mcf_fbv2_p2,scandisent_fi_gen_mcf_fbv2_p3,scandisent_fi_gen_mcf_fbv2_p4"
+V2_GEN_TASKS_SIB200="sib200_fi_gen_cf_fbv2_p0,sib200_fi_gen_cf_fbv2_p1,sib200_fi_gen_cf_fbv2_p2,sib200_fi_gen_cf_fbv2_p3,sib200_fi_gen_cf_fbv2_p4,sib200_fi_gen_mcf_fbv2_p0,sib200_fi_gen_mcf_fbv2_p1,sib200_fi_gen_mcf_fbv2_p2,sib200_fi_gen_mcf_fbv2_p3,sib200_fi_gen_mcf_fbv2_p4"
+
+# All v2 generation tasks
+V2_TASKS="${V2_GEN_TASKS_ARC},${V2_GEN_TASKS_BELEBELE},${V2_GEN_TASKS_GOLDENSWAG},${V2_GEN_TASKS_SCANDISENT},${V2_GEN_TASKS_SIB200}"
+
+# Quick test (just one task from each category)
+V2_TASKS_QUICK="arc_challenge_fi_gen_cf_fbv2_p0,belebele_fin_gen_cf_fbv2_p0,goldenswag_fi_gen_cf_fbv2_p0,scandisent_fi_gen_cf_fbv2_p0,sib200_fi_gen_cf_fbv2_p0"
 
 # Select tasks based on benchmark version and subset
 if [ "$BENCHMARK" = "v2" ]; then
     TASKS="$V2_TASKS"
-    TASK_COUNT=10
-    DESCRIPTION="FIN-bench v2 generate_until tasks (squad + truthfulqa, 5 prompts each)"
+    TASK_COUNT=50
+    DESCRIPTION="FIN-bench v2 generate_until tasks (arc_c, belebele, goldenswag, scandisent, sib200 - CF+MCF, 5 prompts each)"
+elif [ "$BENCHMARK" = "v2-quick" ]; then
+    TASKS="$V2_TASKS_QUICK"
+    TASK_COUNT=5
+    DESCRIPTION="FIN-bench v2 quick test (1 task per category)"
 elif [ "$SUBSET" = "full" ]; then
     TASKS="$V1_FULL_TASKS"
     TASK_COUNT=12

@@ -1,0 +1,28 @@
+output_type: generate_until
+doc_to_target: '{{ choices[answer_idx] }}'
+generation_kwargs:
+  until: []
+  max_gen_toks: 4096
+  do_sample: false
+  temperature: 0
+filter_list:
+- name: finbench_v2_answer_extraction
+  filter:
+  - function: !function utils.FINBenchV2AnswerFilter
+metric_list:
+- metric: exact_match
+  aggregation: mean
+  higher_is_better: true
+  ignore_punctuation: true
+dataset_path: TurkuNLP/finbenchv2-sib-200-fi-og
+test_split: test
+should_decontaminate: true
+doc_to_decontamination_query: '{{ text }}'
+tag:
+- finbench_v2
+- finbench_v2_generation
+- finbench_v2_generation_mcf
+- sib200_fi_multi_fbv2
+- sib200_fi_multi_mcf_fbv2
+metadata:
+  version: '1.0'
