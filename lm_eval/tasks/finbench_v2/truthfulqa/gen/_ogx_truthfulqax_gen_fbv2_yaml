@@ -12,6 +12,14 @@ process_docs: !function 'ogx_truthfulqax_utils.process_docs_gen'
 process_results: !function 'ogx_truthfulqax_utils.process_results_gen'
 should_decontaminate: true
 doc_to_decontamination_query: "{{ question }}"
+# FIX: Add explicit generation_kwargs to avoid problematic defaults
+# Previous: Used default until: ["\n\n"] which truncates reasoning in thinking models
+# See: UNTIL_TOKEN_ANALYSIS.md for details
+generation_kwargs:
+  until: []  # Empty - let model stop naturally (both thinking and non-thinking)
+  max_gen_toks: 4096  # Large enough for reasoning_content + content
+  do_sample: false
+  temperature: 0
 metric_list:
 - metric: bleu_max
   aggregation: mean

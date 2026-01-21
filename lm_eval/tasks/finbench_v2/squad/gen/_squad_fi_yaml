@@ -12,15 +12,20 @@ target_delimiter: ' '
 should_decontaminate: true
 doc_to_decontamination_query: "{{ title }}\n\n{{ context }}\n\n{{ question }}"
 generation_kwargs:
-  until:
-    - "\n"
+  # FIX: Empty until list to avoid truncating reasoning in thinking models (gpt-oss, deepseek-r1)
+  # Previously: until: ["\n"] which could stop generation mid-reasoning
+  # See: UNTIL_TOKEN_ANALYSIS.md for details
+  until: []
+  # FIX: Increased from 32 to 4096 for thinking models
+  # Thinking models generate reasoning_content (100-1000+ tokens) + content (answer)
+  # 32 tokens is insufficient and causes null content errors
+  max_gen_toks: 4096
   do_sample: false
   num_beams: 1
-  max_new_tokens: 32
 metric_list:
-  - metric: exact_match
-    aggregation: mean
-    higher_is_better: true
+  # Note: exact_match removed - always 0% for chat models due to verbose responses
+  # Chat models generate "Helsinki on Suomen pääkaupunki" instead of just "Helsinki"
+  # F1 score (token overlap) is the appropriate metric for chat/thinking models
   - metric: f1
     aggregation: mean
     higher_is_better: true
