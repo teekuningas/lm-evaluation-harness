@@ -35,23 +35,23 @@ fi
 # V1 legacy tasks (12 tasks)
 V1_TASKS="FIN-bench_analogies_generate_until,FIN-bench_arithmetic_generate_until,FIN-bench_cause_and_effect_generate_until,FIN-bench_emotions_generate_until,FIN-bench_empirical_judgments_generate_until,FIN-bench_general_knowledge_generate_until,FIN-bench_hhh_alignment_generate_until,FIN-bench_intent_recognition_generate_until,FIN-bench_misconceptions_generate_until,FIN-bench_paraphrase_generate_until,FIN-bench_sentence_ambiguity_generate_until,FIN-bench_similarities_abstraction_generate_until"
 
-# V2 new dataset tasks (50 tasks: arc, belebele, goldenswag, scandisent, sib200)
-V2_NEW_ARC="arc_challenge_fi_gen_cf_fbv2_p0,arc_challenge_fi_gen_cf_fbv2_p1,arc_challenge_fi_gen_cf_fbv2_p2,arc_challenge_fi_gen_cf_fbv2_p3,arc_challenge_fi_gen_cf_fbv2_p4,arc_challenge_fi_gen_mcf_fbv2_p0,arc_challenge_fi_gen_mcf_fbv2_p1,arc_challenge_fi_gen_mcf_fbv2_p2,arc_challenge_fi_gen_mcf_fbv2_p3,arc_challenge_fi_gen_mcf_fbv2_p4"
-V2_NEW_BELEBELE="belebele_fin_gen_cf_fbv2_p0,belebele_fin_gen_cf_fbv2_p1,belebele_fin_gen_cf_fbv2_p2,belebele_fin_gen_cf_fbv2_p3,belebele_fin_gen_cf_fbv2_p4,belebele_fin_gen_mcf_fbv2_p0,belebele_fin_gen_mcf_fbv2_p1,belebele_fin_gen_mcf_fbv2_p2,belebele_fin_gen_mcf_fbv2_p3,belebele_fin_gen_mcf_fbv2_p4"
-V2_NEW_GOLDENSWAG="goldenswag_fi_gen_cf_fbv2_p0,goldenswag_fi_gen_cf_fbv2_p1,goldenswag_fi_gen_cf_fbv2_p2,goldenswag_fi_gen_cf_fbv2_p3,goldenswag_fi_gen_cf_fbv2_p4,goldenswag_fi_gen_mcf_fbv2_p0,goldenswag_fi_gen_mcf_fbv2_p1,goldenswag_fi_gen_mcf_fbv2_p2,goldenswag_fi_gen_mcf_fbv2_p3,goldenswag_fi_gen_mcf_fbv2_p4"
-V2_NEW_SCANDISENT="scandisent_fi_gen_cf_fbv2_p0,scandisent_fi_gen_cf_fbv2_p1,scandisent_fi_gen_cf_fbv2_p2,scandisent_fi_gen_cf_fbv2_p3,scandisent_fi_gen_cf_fbv2_p4,scandisent_fi_gen_mcf_fbv2_p0,scandisent_fi_gen_mcf_fbv2_p1,scandisent_fi_gen_mcf_fbv2_p2,scandisent_fi_gen_mcf_fbv2_p3,scandisent_fi_gen_mcf_fbv2_p4"
-V2_NEW_SIB200="sib200_fi_gen_cf_fbv2_p0,sib200_fi_gen_cf_fbv2_p1,sib200_fi_gen_cf_fbv2_p2,sib200_fi_gen_cf_fbv2_p3,sib200_fi_gen_cf_fbv2_p4,sib200_fi_gen_mcf_fbv2_p0,sib200_fi_gen_mcf_fbv2_p1,sib200_fi_gen_mcf_fbv2_p2,sib200_fi_gen_mcf_fbv2_p3,sib200_fi_gen_mcf_fbv2_p4"
+# V2 new dataset tasks (25 tasks: arc, belebele, goldenswag, scandisent, sib200 - MCF only)
+V2_NEW_ARC="arc_challenge_fi_gen_mcf_fbv2_p0,arc_challenge_fi_gen_mcf_fbv2_p1,arc_challenge_fi_gen_mcf_fbv2_p2,arc_challenge_fi_gen_mcf_fbv2_p3,arc_challenge_fi_gen_mcf_fbv2_p4"
+V2_NEW_BELEBELE="belebele_fin_gen_mcf_fbv2_p0,belebele_fin_gen_mcf_fbv2_p1,belebele_fin_gen_mcf_fbv2_p2,belebele_fin_gen_mcf_fbv2_p3,belebele_fin_gen_mcf_fbv2_p4"
+V2_NEW_GOLDENSWAG="goldenswag_fi_gen_mcf_fbv2_p0,goldenswag_fi_gen_mcf_fbv2_p1,goldenswag_fi_gen_mcf_fbv2_p2,goldenswag_fi_gen_mcf_fbv2_p3,goldenswag_fi_gen_mcf_fbv2_p4"
+V2_NEW_SCANDISENT="scandisent_fi_gen_mcf_fbv2_p0,scandisent_fi_gen_mcf_fbv2_p1,scandisent_fi_gen_mcf_fbv2_p2,scandisent_fi_gen_mcf_fbv2_p3,scandisent_fi_gen_mcf_fbv2_p4"
+V2_NEW_SIB200="sib200_fi_gen_mcf_fbv2_p0,sib200_fi_gen_mcf_fbv2_p1,sib200_fi_gen_mcf_fbv2_p2,sib200_fi_gen_mcf_fbv2_p3,sib200_fi_gen_mcf_fbv2_p4"
 V2_NEW_TASKS="${V2_NEW_ARC},${V2_NEW_BELEBELE},${V2_NEW_GOLDENSWAG},${V2_NEW_SCANDISENT},${V2_NEW_SIB200}"
 
-# V2 updated v1 tasks (50 tasks: analogies, emotions, knowledge, hhh, similarities)
-V2_V1_ANALOGIES="finbench_analogies_gen_cf_fbv2_p0,finbench_analogies_gen_cf_fbv2_p1,finbench_analogies_gen_cf_fbv2_p2,finbench_analogies_gen_cf_fbv2_p3,finbench_analogies_gen_cf_fbv2_p4,finbench_analogies_gen_mcf_fbv2_p0,finbench_analogies_gen_mcf_fbv2_p1,finbench_analogies_gen_mcf_fbv2_p2,finbench_analogies_gen_mcf_fbv2_p3,finbench_analogies_gen_mcf_fbv2_p4"
-V2_V1_EMOTIONS="finbench_emotions_1k_gen_cf_fbv2_p0,finbench_emotions_1k_gen_cf_fbv2_p1,finbench_emotions_1k_gen_cf_fbv2_p2,finbench_emotions_1k_gen_cf_fbv2_p3,finbench_emotions_1k_gen_cf_fbv2_p4,finbench_emotions_1k_gen_mcf_fbv2_p0,finbench_emotions_1k_gen_mcf_fbv2_p1,finbench_emotions_1k_gen_mcf_fbv2_p2,finbench_emotions_1k_gen_mcf_fbv2_p3,finbench_emotions_1k_gen_mcf_fbv2_p4"
-V2_V1_KNOWLEDGE="finbench_general_knowledge_gen_cf_fbv2_p0,finbench_general_knowledge_gen_cf_fbv2_p1,finbench_general_knowledge_gen_cf_fbv2_p2,finbench_general_knowledge_gen_cf_fbv2_p3,finbench_general_knowledge_gen_cf_fbv2_p4,finbench_general_knowledge_gen_mcf_fbv2_p0,finbench_general_knowledge_gen_mcf_fbv2_p1,finbench_general_knowledge_gen_mcf_fbv2_p2,finbench_general_knowledge_gen_mcf_fbv2_p3,finbench_general_knowledge_gen_mcf_fbv2_p4"
-V2_V1_HHH="finbench_hhh_alignment_gen_cf_fbv2_p0,finbench_hhh_alignment_gen_cf_fbv2_p1,finbench_hhh_alignment_gen_cf_fbv2_p2,finbench_hhh_alignment_gen_cf_fbv2_p3,finbench_hhh_alignment_gen_cf_fbv2_p4,finbench_hhh_alignment_gen_mcf_fbv2_p0,finbench_hhh_alignment_gen_mcf_fbv2_p1,finbench_hhh_alignment_gen_mcf_fbv2_p2,finbench_hhh_alignment_gen_mcf_fbv2_p3,finbench_hhh_alignment_gen_mcf_fbv2_p4"
-V2_V1_SIMILARITIES="finbench_similarities_abstraction_gen_cf_fbv2_p0,finbench_similarities_abstraction_gen_cf_fbv2_p1,finbench_similarities_abstraction_gen_cf_fbv2_p2,finbench_similarities_abstraction_gen_cf_fbv2_p3,finbench_similarities_abstraction_gen_cf_fbv2_p4,finbench_similarities_abstraction_gen_mcf_fbv2_p0,finbench_similarities_abstraction_gen_mcf_fbv2_p1,finbench_similarities_abstraction_gen_mcf_fbv2_p2,finbench_similarities_abstraction_gen_mcf_fbv2_p3,finbench_similarities_abstraction_gen_mcf_fbv2_p4"
+# V2 updated v1 tasks (25 tasks: analogies, emotions, knowledge, hhh, similarities - MCF only)
+V2_V1_ANALOGIES="finbench_analogies_gen_mcf_fbv2_p0,finbench_analogies_gen_mcf_fbv2_p1,finbench_analogies_gen_mcf_fbv2_p2,finbench_analogies_gen_mcf_fbv2_p3,finbench_analogies_gen_mcf_fbv2_p4"
+V2_V1_EMOTIONS="finbench_emotions_1k_gen_mcf_fbv2_p0,finbench_emotions_1k_gen_mcf_fbv2_p1,finbench_emotions_1k_gen_mcf_fbv2_p2,finbench_emotions_1k_gen_mcf_fbv2_p3,finbench_emotions_1k_gen_mcf_fbv2_p4"
+V2_V1_KNOWLEDGE="finbench_general_knowledge_gen_mcf_fbv2_p0,finbench_general_knowledge_gen_mcf_fbv2_p1,finbench_general_knowledge_gen_mcf_fbv2_p2,finbench_general_knowledge_gen_mcf_fbv2_p3,finbench_general_knowledge_gen_mcf_fbv2_p4"
+V2_V1_HHH="finbench_hhh_alignment_gen_mcf_fbv2_p0,finbench_hhh_alignment_gen_mcf_fbv2_p1,finbench_hhh_alignment_gen_mcf_fbv2_p2,finbench_hhh_alignment_gen_mcf_fbv2_p3,finbench_hhh_alignment_gen_mcf_fbv2_p4"
+V2_V1_SIMILARITIES="finbench_similarities_abstraction_gen_mcf_fbv2_p0,finbench_similarities_abstraction_gen_mcf_fbv2_p1,finbench_similarities_abstraction_gen_mcf_fbv2_p2,finbench_similarities_abstraction_gen_mcf_fbv2_p3,finbench_similarities_abstraction_gen_mcf_fbv2_p4"
 V2_V1_TASKS="${V2_V1_ANALOGIES},${V2_V1_EMOTIONS},${V2_V1_KNOWLEDGE},${V2_V1_HHH},${V2_V1_SIMILARITIES}"
 
-# V2 all (100 tasks)
+# V2 all (50 tasks: MCF only, CF removed as redundant)
 V2_ALL_TASKS="${V2_NEW_TASKS},${V2_V1_TASKS}"
 
 # Select tasks based on BENCHMARK
@@ -63,18 +63,18 @@ case "$BENCHMARK" in
         ;;
     v2)
         TASKS="$V2_ALL_TASKS"
-        TASK_COUNT=100
-        DESCRIPTION="FINBench v2 all (100 tasks: 50 new + 50 updated v1)"
+        TASK_COUNT=50
+        DESCRIPTION="FINBench v2 all (50 tasks: 25 new + 25 updated v1, MCF only)"
         ;;
     v2_new)
         TASKS="$V2_NEW_TASKS"
-        TASK_COUNT=50
-        DESCRIPTION="FINBench v2 new datasets only (50 tasks)"
+        TASK_COUNT=25
+        DESCRIPTION="FINBench v2 new datasets only (25 tasks, MCF only)"
         ;;
     v2_v1)
         TASKS="$V2_V1_TASKS"
-        TASK_COUNT=50
-        DESCRIPTION="FINBench v2 updated v1 only (50 tasks)"
+        TASK_COUNT=25
+        DESCRIPTION="FINBench v2 updated v1 only (25 tasks, MCF only)"
         ;;
     *)
         echo "Error: Unknown BENCHMARK='$BENCHMARK'"

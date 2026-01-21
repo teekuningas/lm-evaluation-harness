@@ -1,4 +1,0 @@
-task: finbench_analogies_gen_cf_fbv2_p0
-include: _finbench_analogies_gen_cf_fbv2_yaml
-doc_to_text: !function utils.doc_to_text_with_choices_injected
-dataset_name: analogies_zero_shot

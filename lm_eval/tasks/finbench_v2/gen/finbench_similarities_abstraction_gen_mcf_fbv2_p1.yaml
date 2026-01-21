@@ -1,4 +1,4 @@
 task: finbench_similarities_abstraction_gen_mcf_fbv2_p1
 include: _finbench_similarities_abstraction_gen_mcf_fbv2_yaml
-doc_to_text: !function utils.doc_to_text_with_choices_injected
+doc_to_text: !function doc_to_texts.doc_to_text_finbench_similarities_abstraction_gen_mcf_fbv2_p1
 dataset_name: similarities_abstraction_zero_shot

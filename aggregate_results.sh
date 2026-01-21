@@ -80,9 +80,15 @@ try:
     
     for task, task_results in results.items():
         # Handle different metric naming conventions
-        acc = (task_results.get('exact_match,finbench_answer_extraction') or 
-               task_results.get('exact_match,none') or 
-               task_results.get('exact_match') or 0)
+        acc = task_results.get('exact_match,finbench_v2_answer_extraction')
+        if acc is None:
+            acc = task_results.get('exact_match,finbench_answer_extraction')
+        if acc is None:
+            acc = task_results.get('exact_match,none')
+        if acc is None:
+            acc = task_results.get('exact_match')
+        if acc is None:
+            acc = 0
         samples = n_samples.get(task, {}).get('effective', 0)
         
         total_acc += acc
@@ -165,8 +171,8 @@ echo ""
 echo "--------------------------------------------------------------------------------"
 
 for task in "${TASKS_ARRAY[@]}"; do
-    # Shorten task name for display
-    task_short=$(echo "$task" | sed 's/FIN-bench_//' | sed 's/_generate_until//' | sed 's/_fbv2_p[0-9]//' | sed 's/ogx_//' | sed 's/_fi//')
+    # Shorten task name for display (keep p0-p4 variants visible)
+    task_short=$(echo "$task" | sed 's/FIN-bench_//' | sed 's/_generate_until//' | sed 's/_gen_mcf_fbv2_/\//' | sed 's/_fi//')
     printf "%-50s" "$task_short"
     
     for json_file in $JSON_FILES; do
@@ -176,10 +182,14 @@ try:
     with open('$json_file', 'r') as f:
         data = json.load(f)
     task_data = data.get('results', {}).get('$task', {})
-    # Handle different metric naming conventions
-    result = (task_data.get('exact_match,finbench_answer_extraction') or 
-              task_data.get('exact_match,none') or 
-              task_data.get('exact_match'))
+    # Handle different metric naming conventions  
+    result = task_data.get('exact_match,finbench_v2_answer_extraction')
+    if result is None:
+        result = task_data.get('exact_match,finbench_answer_extraction')
+    if result is None:
+        result = task_data.get('exact_match,none')
+    if result is None:
+        result = task_data.get('exact_match')
     print(f'{result:.4f}' if result is not None else 'N/A')
 except:
     print('N/A')

@@ -1,3 +1,0 @@
-task: sib200_fi_gen_cf_fbv2_p3
-include: _sib200_fi_gen_cf_fbv2_yaml
-doc_to_text: !function utils.doc_to_text_with_choices_injected

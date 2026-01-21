@@ -1,4 +1,4 @@
 task: finbench_hhh_alignment_gen_mcf_fbv2_p3
 include: _finbench_hhh_alignment_gen_mcf_fbv2_yaml
-doc_to_text: !function utils.doc_to_text_with_choices_injected
+doc_to_text: !function doc_to_texts.doc_to_text_finbench_hhh_alignment_gen_mcf_fbv2_p3
 dataset_name: hhh_alignment_zero_shot
