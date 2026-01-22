@@ -48,7 +48,8 @@ def doc_to_text_with_choices_injected(doc):
     instructions = (
         "TÄRKEÄÄ: Vastaa lyhyesti ja selkeästi. "
         "Valitse täsmälleen yksi vastausvaihtoehto annetuista. "
-        "Vastaa VAIN valintavaihtoehdolla, ÄLÄ numerolla. "
+        "Vastaa VAIN valintavaihtoehdon TÄYDELLÄ TEKSTILLÄ. "
+        "ÄLÄ käytä pelkkää kirjainta (A, B, C, D) tai numeroa (1, 2, 3, 4). "
         "Älä anna pitkiä selityksiä. "
         "Vastauksesi luetaan automaattisesti.\n\n"
     )

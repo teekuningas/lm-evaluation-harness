@@ -401,7 +401,8 @@ def generate_doc_to_texts_file(templates: Dict[str, str], gen_path: Path, dry_ru
     lines.append('    instructions = (')
     lines.append('        "TÄRKEÄÄ: Vastaa lyhyesti ja selkeästi. "')
     lines.append('        "Valitse täsmälleen yksi vastausvaihtoehto annetuista. "')
-    lines.append('        "Vastaa VAIN valintavaihtoehdolla, ÄLÄ numerolla. "')
+    lines.append('        "Vastaa VAIN valintavaihtoehdon TÄYDELLÄ TEKSTILLÄ. "')
+    lines.append('        "ÄLÄ käytä pelkkää kirjainta (A, B, C, D) tai numeroa (1, 2, 3, 4). "')
     lines.append('        "Älä anna pitkiä selityksiä. "')
     lines.append('        "Vastauksesi luetaan automaattisesti.\\n\\n"')
     lines.append('    )')
@@ -552,6 +553,17 @@ def migrate_category(category: str, dry_run: bool = False) -> Tuple[int, Dict[st
             # Load original prompt file to get doc_to_text and dataset_name
             original_prompt = load_yaml(prompt_file)
             doc_to_text = original_prompt.get('doc_to_text', '')
+            
+            # IMPORTANT: Some MCF tasks (like emotions p0/p4, analogies p3, etc.) 
+            # have choices/instructions in 'description' field.
+            # In multiple_choice tasks, description is prepended to create full context.
+            # We must do the same for generate_until to preserve prompt structure.
+            description = original_prompt.get('description', '')
+            if description:
+                # Prepend description to doc_to_text (matches lm-eval's fewshot_context behavior)
+                doc_to_text = description + doc_to_text
+                logger.info(f"  Added description to {prompt_var}: '{description[:50]}...'")
+            
             
             # Create new task name
             new_task_name = f'{task_base}_gen_{format_type}_fbv2_{prompt_var}'

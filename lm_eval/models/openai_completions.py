@@ -197,7 +197,8 @@ class LocalChatCompletion(LocalCompletionsAPI):
         stop = handle_stop_sequences(gen_kwargs.pop("until", None), eos)
         if not isinstance(stop, (list, tuple)):
             stop = [stop]
-        return {
+        
+        payload = {
             "messages": messages,
             "model": self.model,
             "max_tokens": max_tokens,
@@ -206,6 +207,27 @@ class LocalChatCompletion(LocalCompletionsAPI):
             "seed": seed,
             **gen_kwargs,
         }
+        
+        # Log the actual request being sent to the model
+        # This is invaluable for debugging prompt issues
+        if eval_logger.isEnabledFor(logging.DEBUG):
+            eval_logger.debug(
+                f"\n{'='*80}\n"
+                f"REQUEST TO MODEL:\n"
+                f"{'='*80}\n"
+                f"Model: {self.model}\n"
+                f"Messages:\n"
+            )
+            for msg in messages:
+                role = msg.get('role', 'unknown')
+                content = msg.get('content', '')
+                eval_logger.debug(f"  [{role}]: {content[:500]}{'...' if len(content) > 500 else ''}")
+            eval_logger.debug(
+                f"\nGeneration params: max_tokens={max_tokens}, temperature={temperature}, stop={stop}\n"
+                f"{'='*80}\n"
+            )
+        
+        return payload
 
     @staticmethod
     def parse_generations(outputs: Union[Dict, List[Dict]], **kwargs) -> List[str]:
