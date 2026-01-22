@@ -5,6 +5,8 @@ set -e
 SERVER_URL=${SERVER_URL:-"http://localhost:7999"}
 MODEL_NAME=${MODEL_NAME:-"gpt-oss-120b"}
 OUTPUT_DIR=${OUTPUT_DIR:-"/results"}
+# Set to "false" for models with strict chat template parsers (e.g., Mistral)
+ADD_CHAT_TYPE_FIELD=${ADD_CHAT_TYPE_FIELD:-"true"}
 EXTRA_ARGS="$@"
 
 # Create timestamp for this run
@@ -45,9 +47,10 @@ SERVER_MODEL=$(echo "$MODEL_INFO" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"'
 echo ">>> Server reports model: $SERVER_MODEL"
 
 echo ">>> Running Finnish benchmark..."
-echo ">>> Command: lm_eval --model local-chat-completions --model_args base_url=${SERVER_URL}/v1/chat/completions,model=$SERVER_MODEL,max_gen_toks=2048 --apply_chat_template --batch_size 1 --output_path $OUTPUT_FILE $EXTRA_ARGS"
+echo ">>> Command: lm_eval --model local-chat-completions --model_args base_url=${SERVER_URL}/v1/chat/completions,model=$SERVER_MODEL,max_gen_toks=2048,add_chat_type_field=${ADD_CHAT_TYPE_FIELD} --apply_chat_template --batch_size 1 --output_path $OUTPUT_FILE $EXTRA_ARGS"
 echo ">>> Note: max_gen_toks=2048 allows thinking models to complete reasoning + answer"
 echo ">>> If you see 'null content' errors, increase max_gen_toks further"
+echo ">>> add_chat_type_field=${ADD_CHAT_TYPE_FIELD} (set to false for Mistral-like strict parsers)"
 echo "=========================================="
 
 # Run the benchmark using local-chat-completions model
@@ -62,7 +65,7 @@ echo ">>> Full logs will be saved to: $LOG_FILE"
 # Run with output redirected to log file
 lm_eval \
     --model local-chat-completions \
-    --model_args base_url=${SERVER_URL}/v1/chat/completions,model=$SERVER_MODEL,max_gen_toks=2048 \
+    --model_args base_url=${SERVER_URL}/v1/chat/completions,model=$SERVER_MODEL,max_gen_toks=2048,add_chat_type_field=${ADD_CHAT_TYPE_FIELD} \
     --apply_chat_template \
     --batch_size 1 \
     --output_path "$OUTPUT_FILE" \
@@ -87,7 +90,7 @@ Server URL: $SERVER_URL
 Output File: $OUTPUT_FILE
 
 Command:
-lm_eval --model local-chat-completions --model_args base_url=${SERVER_URL}/v1/chat/completions,model=$SERVER_MODEL,max_gen_toks=2048 --apply_chat_template --batch_size 1 --output_path $OUTPUT_FILE $EXTRA_ARGS
+lm_eval --model local-chat-completions --model_args base_url=${SERVER_URL}/v1/chat/completions,model=$SERVER_MODEL,max_gen_toks=2048,add_chat_type_field=${ADD_CHAT_TYPE_FIELD} --apply_chat_template --batch_size 1 --output_path $OUTPUT_FILE $EXTRA_ARGS
 
 Results:
 --------

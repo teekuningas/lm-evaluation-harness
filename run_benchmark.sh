@@ -115,6 +115,7 @@ podman run --rm -it \
     -v "$(pwd)/results:/results:Z" \
     -e MODEL_NAME="$MODEL_NAME" \
     -e SERVER_URL="$SERVER_URL" \
+    -e ADD_CHAT_TYPE_FIELD="${ADD_CHAT_TYPE_FIELD:-true}" \
     -e NO_LIMIT="" \
     "$IMAGE_NAME" \
     --tasks "$TASKS" \

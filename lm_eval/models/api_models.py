@@ -95,9 +95,15 @@ def create_image_prompt(
     if isinstance(chat[-1]["content"], list):
         chat[-1]["content"] = images + chat[-1]["content"]
     else:
-        text_content = {"type": "text", "text": chat[-1]["content"]}
-        chat[-1]["content"] = images + [text_content]
-    chat[-1].pop("type")
+        # Only wrap in {"type": "text", "text": ...} format if there are images
+        # Otherwise keep as simple string for compatibility with all models
+        if images:
+            text_content = {"type": "text", "text": chat[-1]["content"]}
+            chat[-1]["content"] = images + [text_content]
+        else:
+            # No images, keep content as simple string
+            pass
+    chat[-1].pop("type", None)  # Use pop with default to avoid KeyError
     return chat
 
 
@@ -139,6 +145,9 @@ class TemplateAPI(TemplateLM):
         timeout: int = 300,
         header: Optional[Dict[str, str]] = None,
         max_images: int = 1,
+        # For compatibility with strict chat template parsers (e.g., Mistral)
+        # Set to False to avoid adding "type": "text" field to chat messages
+        add_chat_type_field: bool = True,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -189,6 +198,13 @@ class TemplateAPI(TemplateLM):
         self._eos_string = eos_string
         self.timeout = int(timeout)
         self.max_images = int(max_images)
+        # Convert string "false"/"true" to boolean
+        eval_logger.info(f"add_chat_type_field parameter received: {add_chat_type_field!r} (type: {type(add_chat_type_field).__name__})")
+        if isinstance(add_chat_type_field, str):
+            self.add_chat_type_field = add_chat_type_field.lower() not in ("false", "0", "no")
+        else:
+            self.add_chat_type_field = bool(add_chat_type_field)
+        eval_logger.info(f"add_chat_type_field set to: {self.add_chat_type_field}")
 
         eval_logger.info(f"Using tokenizer {self.tokenizer_backend}")
         if self.tokenizer_backend is None:
@@ -341,13 +357,22 @@ class TemplateAPI(TemplateLM):
         elif self.tokenizer_backend == "remote" and self.tokenized_requests:
             return chat_history
         else:
-            # bit of a hack. We'll load back before sending to the API
-            return JsonChatStr(
-                json.dumps(
-                    [{**item, "type": "text"} for item in chat_history],
-                    ensure_ascii=False,
+            # Optionally add type field for compatibility
+            # Some models (e.g., Mistral with strict parsers) reject the type field
+            if self.add_chat_type_field:
+                return JsonChatStr(
+                    json.dumps(
+                        [{**item, "type": "text"} for item in chat_history],
+                        ensure_ascii=False,
+                    )
                 )
-            )
+            else:
+                return JsonChatStr(
+                    json.dumps(
+                        chat_history,
+                        ensure_ascii=False,
+                    )
+                )
 
     @cached_property
     def eot_token_id(self) -> Optional[int]:
